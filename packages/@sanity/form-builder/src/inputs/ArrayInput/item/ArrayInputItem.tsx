@@ -1,6 +1,7 @@
 import {FormFieldPresence} from '@sanity/base/presence'
 import {ArraySchemaType, Marker, Path} from '@sanity/types'
 import React from 'react'
+import scrollIntoView from 'scroll-into-view-if-needed'
 import PatchEvent from '../../../PatchEvent'
 import {ItemValue} from '../typedefs'
 import {ArrayInputGridItem} from './ArrayInputGridItem'
@@ -25,11 +26,31 @@ interface ArrayInputItemProps {
 }
 
 export function ArrayInputItem(props: ArrayInputItemProps) {
+  const elementRef = React.useRef<HTMLDivElement>()
+  const hadChildFocus = React.useRef(false)
+  const hasChildFocus = props.focusPath.length > 1
+
+  React.useEffect(() => {
+    // console.log(elementRef.current)
+    if (elementRef.current && hadChildFocus.current === false && hasChildFocus) {
+      scrollIntoView(elementRef.current, {scrollMode: 'if-needed'})
+    }
+    hadChildFocus.current = hasChildFocus
+  }, [hasChildFocus])
+
   const options = props.type.options || {}
 
   if (options.layout === 'grid') {
-    return <ArrayInputGridItem {...props} />
+    return (
+      <div ref={elementRef}>
+        <ArrayInputGridItem {...props} />
+      </div>
+    )
   }
 
-  return <ArrayInputListItem {...props} />
+  return (
+    <div ref={elementRef}>
+      <ArrayInputListItem {...props} />
+    </div>
+  )
 }
