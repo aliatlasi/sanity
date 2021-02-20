@@ -1,7 +1,6 @@
 @import 'part:@sanity/base/theme/variables-style';
 
 .root {
-  text-align: left;
   display: block;
   font-family: var(--headings-font-family);
   font-weight: var(--headings-font-weight);
